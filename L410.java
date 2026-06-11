@@ -1,19 +1,45 @@
 public class L410 {
-    public int splitArray(int[] nums, int k) {
-        int sum2 = 0;
-        for (int i = 0; i < nums.length; i++) {
-            sum2 += nums[i];
+
+    public boolean canFit(int[] nums, int perK, int k){
+        int count = 1;
+        int sum = 0;
+        for(int num : nums){
+            if((sum+num)>perK){
+                count++;
+                sum = num;
+            }
+            else{
+                sum += num;
+            }
         }
-        int j = 0;
-        for (int i = 1; i < k; i++) {
-            int sum1 = 0;
-            while (sum1 + nums[j] < sum2 - nums[j]) {
-                sum1 += nums[j];
-                sum2 -= nums[j];
-                j++;
+        return count <= k;
+    }
+
+    public int splitArray(int[] nums, int k) {
+        int n = nums.length;
+        int min = Integer.MIN_VALUE;
+        int max = 0;
+        if(n < k){
+            return 0;
+        }
+        for(int num : nums){
+            min = Math.max(min, num);
+            max += num;
+        }
+
+        int soln = 0;
+        while(min <= max){
+            int mid = min + (max-min)/2;
+            if(canFit(nums, mid, k)){
+                soln = mid;
+                max = mid-1;
+            }
+            else{
+                min = mid + 1;
             }
         }
 
-        return sum2;
+        return soln;
     }
+
 }
