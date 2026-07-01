@@ -1,5 +1,3 @@
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class L124 {
     public class TreeNode {
@@ -21,51 +19,25 @@ public class L124 {
         }
     }
 
-    public int sum = 0;
-    Queue<Integer> q = new LinkedList<>();
-    private void inorder(TreeNode root) {
-        if (root == null) {
-            return;
-        }
-
-        // First recur on left subtree
-        inorder(root.left);
-
-        // Now deal with the node
-        sum += root.val;
-        q.add(root.val);
-
-        // Then recur on right subtree
-        inorder(root.right);
-    }
-
     public int maxPathSum(TreeNode root) {
-        inorder(root);
-
-        int max = sum;
-        int n = q.size();
-        int arr[] = new int[n];
-        int a =0;
-        
-        for (int i = 0; i < n; i++) {
-            arr[i] = q.poll();
-        }
-        int right = 0;
-        int left = 0;
-
-        while (left!=n) {
-            if (arr[right] >= 0) {
-                a += arr[right];
-            }
-            else {
-                if (max < a) {
-                    max = a;
-                }
-                left
-            }
-        }
-        
-
-        return max;
+        int[] res = { root.val };
+        dfs(root, res);
+        return res[0];
     }
+
+    private int dfs(TreeNode node, int[] res) {
+        if (node == null) {
+            return 0;
+        }
+
+        // Recursively compute the maximum sum of the left and right subtree paths.
+        int leftSum = Math.max(0, dfs(node.left, res));
+        int rightSum = Math.max(0, dfs(node.right, res));
+
+        // Update the maximum path sum encountered so far (with split).
+        res[0] = Math.max(res[0], leftSum + rightSum + node.val);
+
+        // Return the maximum sum of the path (without split).
+        return Math.max(leftSum, rightSum) + node.val;
+    }    
 }
